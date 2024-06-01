@@ -19,12 +19,13 @@
         crossorigin="anonymous"></script>
 	<!-- Load p5.js library -->
 	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
+	<script src="/js/main.js"></script>
 
 	<!-- Link to javascript files - DEFER waits until all elements are rendered -->
     <!--<script type="text/javascript" src="../js/site.js" DEFER></script>-->
 
 </head>
-<body>
+<body onload="main()">
 	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
 	<main id="content">
 		<section>
@@ -46,8 +47,13 @@
 				<h2>
 					User Inputs
 				</h2>
-				<button>Reroll Appearance</button>
-				<button>Reroll Stats</button>
+				<div class="slidecontainer">
+					<p id="StrengthText">Strength: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="StrengthSlide">
+					<p id="DexterityText">Dexterity: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="DexteritySlide">
+					<p id="ConstitutionText">Constitution: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="ConstitutionSlide">
+				</div>
+				<button id="reroll">Reroll Stats</button>
+				<button>Grow</button>
 			</div>
 			<div class="row">
 			<div class="column">

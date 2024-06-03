@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Creature Clash</title>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    <title>Creature Clash</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
-	<script src="./js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
+    <script src="./js/main.js"></script>
 </head>
 
 <body>
-	<main id="content">
-		<section>
-			<h1>Creature Generator Website</h1>
-		</section>
-		<div class="row">
-			<div class="column">
-				<h2>Creature's Appearance</h2>
-				<div id="monsterCanvas"></div>
-			</div>
-			<div class="column">
-				<h2>User Inputs</h2>
-				<div class="slidecontainer">
-					<p id="StrengthText">Strength: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="StrengthSlide">
-					<p id="DexterityText">Dexterity: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="DexteritySlide">
-					<p id="ConstitutionText">Constitution: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="ConstitutionSlide">
-					<p id="SpeedText">Speed: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="SpeedSlide">
-					<p id="IntelligenceText">Intelligence: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="IntelligenceSlide">
-
-				</div>
-				<button id="reroll">Reroll Stats</button>
-				<button id="grow">Grow</button>
-			</div>
-		</div> 
-		<div class="row">
-			<div class="column">
-				<h2>Creature's Stats</h2>
-				<li>
-					<ul>HP: 100</ul>
-					<ul>Strength: 10</ul>
-				</li>
-			</div>
-
-			<div class="column">
-				<h2>Creature's Moves</h2>
-				<li>
-					<div class="abilities-container">
-						<ul id="abilitiesList"></ul>
-					</div>
-				</li>
-			</div>
-			
-		</div>
-	</main>
+    <main id="content">
+        <section>
+            <h1>Creature Generator Website</h1>
+        </section>
+        <div class="row">
+            <div class="column">
+                <h2>Creature's Appearance</h2>
+                <div id="monsterCanvas"></div>
+            </div>
+            <div class="column">
+                <h2>User Inputs</h2>
+                <div class="slidecontainer">
+                    <p id="StrengthText">Strength: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="StrengthSlide">
+                    <p id="DexterityText">Dexterity: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="DexteritySlide">
+                    <p id="ConstitutionText">Constitution: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="ConstitutionSlide">
+                    <p id="SpeedText">Speed: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="SpeedSlide">
+                    <p id="IntelligenceText">Intelligence: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="IntelligenceSlide">
+                </div>
+                <button id="reroll">Reroll Stats</button>
+                <button id="grow">Grow</button>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="column">
+                <h2>Creature's Stats</h2>
+                <ul>
+                    <li>HP: 100</li>
+                    <li>Strength: 10</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h2>Creature's Moves</h2>
+                <div class="abilities-container">
+                    <ul id="abilitiesList"></ul>
+                </div>
+            </div>
+            <div class="column">
+                <h2>Battle</h2>
+                <button id="battle">Battle!</button>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

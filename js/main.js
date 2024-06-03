@@ -97,6 +97,7 @@ function reroll(){
   redraw();
 }
 
+
 function main(){
   slider();
   initializePopulation();
@@ -105,7 +106,23 @@ function main(){
     evaluateFitness();
     generateNextPopulation();
     displayBestCreature();
-};
+  };
+  document.getElementById("battle").addEventListener("click", function() {
+    // Hide the battle button
+    document.getElementById("battle").style.display = 'none';
+
+    // Hide the user inputs and their corresponding headers
+    document.querySelector('.column:nth-child(2)').style.display = 'none'; // Hide the user inputs column
+
+    // Hide the creature's stats and their corresponding header
+    document.querySelector('.column:nth-child(3)').style.display = 'none'; // Hide the stats column
+    document.querySelector('.column:nth-child(4) h2').style.display = 'none'; // Hide the stats header
+
+    // Generate and add AI creature
+   // generateAICreature();
+});
+
+
 }
 
 function drawBody(constitution) {
@@ -317,3 +334,5 @@ function displayBestCreature() {
 document.addEventListener("DOMContentLoaded", function(){
     main();
 })
+
+

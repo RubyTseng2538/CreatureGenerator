@@ -71,7 +71,6 @@ function reroll(){
       }
   }
 
-  // Display the selected abilities
   document.getElementById("abilitiesList").innerHTML = "";
   selectedAbilities.forEach(function(ability) {
       let li = document.createElement("li");

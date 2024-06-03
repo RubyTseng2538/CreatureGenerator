@@ -46,14 +46,8 @@ h1{
 .column {
     float: left;
     border-style: dashed;
-    border-radius: 10px;
-}
-
-.column {
-    flex: left;
     padding: 20px;
     margin: 5px;
-    border-style: dashed;
     border-radius: 10px;
     min-width: 100px;
 }

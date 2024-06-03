@@ -48,3 +48,18 @@ h1{
     border-style: dashed;
     border-radius: 10px;
 }
+
+.column {
+    flex: left;
+    padding: 20px;
+    margin: 5px;
+    border-style: dashed;
+    border-radius: 10px;
+    min-width: 100px;
+}
+
+.abilities-container {
+    padding: 3px;
+    border-radius: 0px;
+    margin-bottom: 10px;
+}

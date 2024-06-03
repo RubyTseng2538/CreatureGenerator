@@ -3,6 +3,15 @@ let Dexterity = 7;
 let Constitution = 7;
 let Speed = 7;
 let Intelligence = 7;
+const abilities = [
+  "Fire Ball",
+  "Ice Shard",
+  "Thunder Strike",
+  "Poison Sting",
+  "Healing Plants",
+  "Invisibility"
+];
+
 
 function setup() {
   let canvas = createCanvas(400, 400); // Increased canvas size for better visibility
@@ -52,6 +61,24 @@ function slider(){
 }
 
 function reroll(){
+
+  let selectedAbilities = [];
+  while (selectedAbilities.length < 2) {
+      let randomIndex = Math.floor(Math.random() * abilities.length);
+      let ability = abilities[randomIndex];
+      if (!selectedAbilities.includes(ability)) {
+          selectedAbilities.push(ability);
+      }
+  }
+
+  // Display the selected abilities
+  document.getElementById("abilitiesList").innerHTML = "";
+  selectedAbilities.forEach(function(ability) {
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(ability));
+      document.getElementById("abilitiesList").appendChild(li);
+  });
+
   Strength = Math.floor(Math.random() * 15) + 1;
   Dexterity = Math.floor(Math.random() * 15) + 1;
   Constitution = Math.floor(Math.random() * 15) + 1;
@@ -70,7 +97,6 @@ function reroll(){
   document.getElementById("IntelligenceText").innerHTML = "Intelligence: "+ Intelligence.toString();
   redraw();
 }
-
 
 function main(){
   slider();
@@ -288,7 +314,3 @@ function displayBestCreature() {
     document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
     redraw();
 }
-
-$(document).ready(function(){
-    main();
-})

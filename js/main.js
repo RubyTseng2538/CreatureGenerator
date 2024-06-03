@@ -73,7 +73,13 @@ function reroll(){
 
 function main(){
   slider();
+  initializePopulation();
   document.getElementById("reroll").onclick = function(){reroll()};
+  document.getElementById("grow").onclick = function() {
+    evaluateFitness();
+    generateNextPopulation();
+    displayBestCreature();
+};
 }
 
 function drawBody(constitution) {
@@ -177,4 +183,107 @@ function drawHorns(strength) {
 
 function randomColor() {
   return color(random(255), random(255), random(255));
+}
+
+class Creature {
+    constructor(strength, dexterity, constitution, speed, intelligence) {
+        this.strength = strength;
+        this.dexterity = dexterity;
+        this.constitution = constitution;
+        this.speed = speed;
+        this.intelligence = intelligence;
+        this.fitness = 0;
+    }
+
+    calculateFitness() {
+        this.fitness = this.strength + this.dexterity + this.constitution + this.speed + this.intelligence;
+    }
+}
+
+let population = [];
+const populationSize = 20;
+const mutationRate = 0.01;
+
+function initializePopulation() {
+    for (let i = 0; i < populationSize; i++) 
+    {
+        population.push(new Creature(
+            Math.floor(Math.random() * 15) + 1,
+            Math.floor(Math.random() * 15) + 1,
+            Math.floor(Math.random() * 15) + 1,
+            Math.floor(Math.random() * 15) + 1,
+            Math.floor(Math.random() * 15) + 1
+        ));
+    }
+}
+
+function evaluateFitness() {
+    for (let creature of population) {
+        creature.calculateFitness();
+    }
+}
+
+function chooseParent() {
+    let overallFitness = population.reduce((sum, creature) => sum + creature.fitness, 0);
+    let randomValue = Math.random() * overallFitness;
+    let sum = 0;
+    for (let creature of population) {
+        sum += creature.fitness;
+        if (sum > randomValue) {
+            return creature;
+        }
+    }
+    return population[0];
+}
+
+function crossover(parentOne, parentTwo) {
+    let child = new Creature(
+        Math.random() < 0.5 ? parentOne.strength : parentTwo.strength,
+        Math.random() < 0.5 ? parentOne.dexterity : parentTwo.dexterity,
+        Math.random() < 0.5 ? parentOne.constitution : parentTwo.constitution,
+        Math.random() < 0.5 ? parentOne.speed : parentTwo.speed,
+        Math.random() < 0.5 ? parentOne.intelligence : parentTwo.intelligence
+    );
+
+    if (Math.random() < mutationRate) child.strength = Math.floor(Math.random() * 15) + 1;
+    if (Math.random() < mutationRate) child.dexterity = Math.floor(Math.random() * 15) + 1;
+    if (Math.random() < mutationRate) child.constitution = Math.floor(Math.random() * 15) + 1;
+    if (Math.random() < mutationRate) child.speed = Math.floor(Math.random() * 15) + 1;
+    if (Math.random() < mutationRate) child.intelligence = Math.floor(Math.random() * 15) + 1;
+  
+    return child;
+}
+
+function generateNextPopulation() {
+    let newPopulation = [];
+    for (let i = 0; i < populationSize; i++) {
+        let parentOne = chooseParent();
+        let parentTwo = chooseParent();
+        let child = crossover(parentOne, parentTwo);
+        newPopulation.push(child);
+    }
+    population = newPopulation;
+}
+
+function displayBestCreature() {
+    evaluateFitness();
+    let bestCreature = population.reduce((best, creature) => best.fitness > creature.fitness ? best : creature);
+    
+    Strength = bestCreature.strength;
+    Dexterity = bestCreature.dexterity;
+    Constitution = bestCreature.constitution;
+    Speed = bestCreature.speed;
+    Intelligence = bestCreature.intelligence;
+  
+    document.getElementById("StrengthSlide").value = Strength;
+    document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
+    document.getElementById("DexteritySlide").value = Dexterity;
+    document.getElementById("DexterityText").innerHTML = "Dexterity: " + Dexterity.toString();
+    document.getElementById("ConstitutionSlide").value = Constitution;
+    document.getElementById("ConstitutionText").innerHTML = "Constitution: " + Constitution.toString();
+    document.getElementById("SpeedSlide").value = Speed;
+    document.getElementById("SpeedText").innerHTML = "Speed: " + Speed.toString();
+    document.getElementById("IntelligenceSlide").value = Intelligence;
+    document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
+    redraw();
 }

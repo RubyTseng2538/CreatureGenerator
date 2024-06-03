@@ -55,7 +55,7 @@ h1{
     margin: 5px;
     border-style: dashed;
     border-radius: 10px;
-    min-width: 100px; /* Adjust the minimum width as needed */
+    min-width: 100px;
 }
 
 .abilities-container {

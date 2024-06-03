@@ -314,3 +314,7 @@ function displayBestCreature() {
     document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
     redraw();
 }
+
+document.addEventListener("DOMContentLoaded", function(){
+    main();
+})

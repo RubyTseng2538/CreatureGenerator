@@ -71,6 +71,7 @@ function reroll(){
   redraw();
 }
 
+
 function main(){
   slider();
   initializePopulation();
@@ -287,3 +288,7 @@ function displayBestCreature() {
     document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
     redraw();
 }
+
+$(document).ready(function(){
+    main();
+})

@@ -11,7 +11,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: lightblue;
+    background-color: #8e8e8e;
 }
 
 #canvas-container {
@@ -19,12 +19,13 @@ body {
     height: 600px;
 }
 
-div{
-    background-color: lightgreen;
+title, h1, h2{
+    font-weight: bold;
+    color: white;
 }
 
-title,h2{
-    font-weight: bold;
+p{
+    color: white;
 }
 
 #box{
@@ -44,11 +45,11 @@ h1{
 }
 
 .column {
+    background-color: #323232;
     float: left;
-    border-style: dashed;
+    border-style: inset;
     padding: 20px;
     margin: 5px;
-    border-radius: 10px;
     min-width: 100px;
 }
 
@@ -56,4 +57,21 @@ h1{
     padding: 3px;
     border-radius: 0px;
     margin-bottom: 10px;
+}
+
+.button {
+    background-color: #7a7a7a; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px; 
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#content{
+    background-color: #181818;
+    padding: 10px;
+    margin: 50px;
 }

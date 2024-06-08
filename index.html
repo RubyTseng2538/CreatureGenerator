@@ -14,15 +14,13 @@
 
 <body>
     <main id="content">
-        <section>
-            <h1>Creature Generator Website</h1>
-        </section>
+        <h1 style="text-align: center;">Creature Generator</h1>
         <div class="row">
-            <div class="column">
+            <div class="column" style="height: 500px">
                 <h2>Creature's Appearance</h2>
                 <div id="monsterCanvas"></div>
             </div>
-            <div class="column">
+            <div class="column" style="height: 500px">
                 <h2>User Inputs</h2>
                 <div class="slidecontainer">
                     <p id="StrengthText">Strength: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="StrengthSlide">
@@ -31,12 +29,12 @@
                     <p id="SpeedText">Speed: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="SpeedSlide">
                     <p id="IntelligenceText">Intelligence: 7</p><input type="range" min="1" max="15" value="7" class="slider" id="IntelligenceSlide">
                 </div>
-                <button id="reroll">Reroll Stats</button>
-                <button id="grow">Grow</button>
+                <button class="button" id="reroll">Reroll Stats</button>
+                <button class="button" id="grow">Grow</button>
             </div>
         </div> 
         <div class="row">
-            <div class="column">
+            <!-- <div class="column">
                 <h2>Creature's Stats</h2>
                 <ul>
                     <li>HP: 100</li>
@@ -48,10 +46,9 @@
                 <div class="abilities-container">
                     <ul id="abilitiesList"></ul>
                 </div>
-            </div>
-            <div class="column">
-                <h2>Battle</h2>
-                <button id="battle">Battle!</button>
+            </div> -->
+            <div class="column" style="width: 700px; height: 50px">
+                <button class="button" id="battle" style="display:flex; justify-content: center; align-items: center; height: 50px; width: 700px;">Select Creature for Battle!</button>
             </div>
         </div>
     </main>

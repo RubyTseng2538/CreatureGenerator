@@ -11,7 +11,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #8e8e8e;
+    background-color: #111111;
 }
 
 #canvas-container {
@@ -21,15 +21,15 @@ body {
 
 title, h1, h2{
     font-weight: bold;
-    color: white;
+    color: #ffee32;
 }
 
 p{
-    color: white;
+    color: #ffee32;
 }
 
 #box{
-    color: white;
+    color: #d6d6d6;
     font-weight: bold;
 }
 
@@ -45,7 +45,7 @@ h1{
 }
 
 .column {
-    background-color: #323232;
+    background-color: #202020;
     float: left;
     border-style: inset;
     padding: 20px;
@@ -60,9 +60,9 @@ h1{
 }
 
 .button {
-    background-color: #7a7a7a; /* Green */
+    background-color: #ffd100; /* Green */
     border: none;
-    color: white;
+    color: #202020;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
@@ -70,8 +70,50 @@ h1{
     font-family: 'Times New Roman', Times, serif;
 }
 
+.slidecontainer{
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 15px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.8; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+  
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px; /* Slider handle height */
+    border-radius: 0%;
+    border: none;
+    background: #ffd100; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px; /* Slider handle height */
+    border-radius: 0%;
+    border: none;
+    background: #ffd100; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
 #content{
-    background-color: #181818;
+    background-color: #333533;
     padding: 10px;
     margin: 50px;
 }

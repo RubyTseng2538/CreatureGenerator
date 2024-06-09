@@ -176,20 +176,50 @@ function drawEyes(intelligence, coord) {
   let eyeCount = Math.floor(Math.random() * 3) + 1;
   let eyeSize = map(intelligence, 1, 15, 10, 30);
   let eyeSpacing = eyeSize * 1.5;
-  fill(255);
+
+  // Randomize colors and shapes for all eyes
+  let scleraColor = color(random(255), random(255), random(255));
+  let irisColor = color(random(255), random(255), random(255));
+  let pupilType = Math.floor(Math.random() * 3); // 0: round, 1: cat-like, 2: demon-like
+
+  fill(scleraColor);
   for (let i = 0; i < eyeCount; i++) {
     let xOffset = (i - (eyeCount - 1) / 2) * eyeSpacing;
+
+    // Draw Sclera
     ellipse(coord.x + xOffset, coord.y, eyeSize, eyeSize);
+
+    // Draw Iris
+    fill(irisColor);
+    ellipse(coord.x + xOffset, coord.y, eyeSize * 0.6, eyeSize * 0.6);
+
+    // Draw Pupil
     fill(0);
-    ellipse(coord.x + xOffset, coord.y, eyeSize / 2, eyeSize / 2);
-    fill(255);
+    switch (pupilType) {
+      case 0: // Round
+        ellipse(coord.x + xOffset, coord.y, eyeSize * 0.3, eyeSize * 0.3);
+        break;
+      case 1: // Cat-like
+        ellipse(coord.x + xOffset, coord.y, eyeSize * 0.15, eyeSize * 0.5);
+        break;
+      case 2: // Demon-like
+        beginShape();
+        vertex(coord.x + xOffset - eyeSize * 0.15, coord.y - eyeSize * 0.25);
+        vertex(coord.x + xOffset + eyeSize * 0.15, coord.y - eyeSize * 0.25);
+        vertex(coord.x + xOffset, coord.y + eyeSize * 0.3);
+        endShape(CLOSE);
+        break;
+    }
+
+    // Reset fill color for the next eye
+    fill(scleraColor);
   }
 }
 
 function drawMouth(strength, coord) {
   let mouthWidth = map(strength, 1, 15, 20, 60);
   let mouthHeight = map(strength, 1, 15, 5, 20);
-  let mouthFangs = Math.random() < 0.5;
+  let mouthFangs = true;
   fill(255, 0, 0);
   arc(coord.x, coord.y, mouthWidth, mouthHeight, 0, PI);
   if (mouthFangs) {
@@ -253,26 +283,56 @@ function drawAntennaEarHorn(dexterity, coord) {
   switch (extraType) {
     case 0: // Antennas
       let antennaLength = map(dexterity, 1, 15, 40, 80);
+      let antennaCurve = map(dexterity, 1, 15, 5, 20);
       stroke(0);
       strokeWeight(4);
-      line(coord.x1, coord.y1, coord.x1, coord.y1 - antennaLength);
-      line(coord.x2, coord.y2, coord.x2, coord.y2 - antennaLength);
+      noFill();
+      beginShape();
+      vertex(coord.x1, coord.y1);
+      quadraticVertex(coord.x1 - antennaCurve, coord.y1 - antennaLength / 2, coord.x1, coord.y1 - antennaLength);
+      endShape();
+      beginShape();
+      vertex(coord.x2, coord.y2);
+      quadraticVertex(coord.x2 + antennaCurve, coord.y2 - antennaLength / 2, coord.x2, coord.y2 - antennaLength);
+      endShape();
       noStroke();
+      fill(0);
+      ellipse(coord.x1, coord.y1 - antennaLength, 5, 5);
+      ellipse(coord.x2, coord.y2 - antennaLength, 5, 5);
       break;
     case 1: // Ears
       let earSize = map(dexterity, 1, 15, 20, 40);
+      let earCurve = map(dexterity, 1, 15, 5, 15);
       fill(randomColor());
-      ellipse(coord.x1, coord.y1, earSize, earSize);
-      ellipse(coord.x2, coord.y2, earSize, earSize);
+      beginShape();
+      vertex(coord.x1, coord.y1);
+      quadraticVertex(coord.x1 - earSize / 2, coord.y1 - earCurve, coord.x1, coord.y1 - earSize);
+      quadraticVertex(coord.x1 + earSize / 2, coord.y1 - earCurve, coord.x1, coord.y1);
+      endShape(CLOSE);
+      beginShape();
+      vertex(coord.x2, coord.y2);
+      quadraticVertex(coord.x2 + earSize / 2, coord.y2 - earCurve, coord.x2, coord.y2 - earSize);
+      quadraticVertex(coord.x2 - earSize / 2, coord.y2 - earCurve, coord.x2, coord.y2);
+      endShape(CLOSE);
       break;
     case 2: // Horns
       let hornSize = map(dexterity, 1, 15, 20, 40);
+      let hornWidth = map(dexterity, 1, 15, 5, 20);
       fill(139, 69, 19);
-      triangle(coord.x1, coord.y1, coord.x1 - hornSize / 2, coord.y1 - hornSize, coord.x1 + hornSize / 2, coord.y1 - hornSize);
-      triangle(coord.x2, coord.y2, coord.x2 - hornSize / 2, coord.y2 - hornSize, coord.x2 + hornSize / 2, coord.y2 - hornSize);
+      beginShape();
+      vertex(coord.x1, coord.y1);
+      quadraticVertex(coord.x1 - hornWidth / 2, coord.y1 - hornSize / 2, coord.x1, coord.y1 - hornSize);
+      quadraticVertex(coord.x1 + hornWidth / 2, coord.y1 - hornSize / 2, coord.x1, coord.y1);
+      endShape(CLOSE);
+      beginShape();
+      vertex(coord.x2, coord.y2);
+      quadraticVertex(coord.x2 + hornWidth / 2, coord.y2 - hornSize / 2, coord.x2, coord.y2 - hornSize);
+      quadraticVertex(coord.x2 - hornWidth / 2, coord.y2 - hornSize / 2, coord.x2, coord.y2);
+      endShape(CLOSE);
       break;
   }
 }
+
 
 function randomColor() {
   return color(random(255), random(255), random(255));

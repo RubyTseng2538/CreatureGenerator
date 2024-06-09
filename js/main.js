@@ -11,7 +11,7 @@ const abilities = [
   "Healing Plants",
   "Invisibility"
 ];
-
+let bodyCoords;
 
 function setup() {
   let canvas = createCanvas(400, 400); // Increased canvas size for better visibility
@@ -21,61 +21,58 @@ function setup() {
 
 function draw() {
   background(220);
-  drawBody(Constitution);
-  drawEyes(Intelligence);
-  drawMouth(Strength);
-  drawNose(Intelligence);
-  drawAntennas(Dexterity);
-  drawEars(Constitution);
-  drawHorns(Strength);
-  drawArms(Dexterity);
-  drawLegs(Speed);
+  bodyCoords = drawBody(Constitution);
+  drawEyes(Intelligence, bodyCoords.eyes);
+  drawMouth(Strength, bodyCoords.mouth);
+  drawNose(Intelligence, bodyCoords.nose);
+  drawArms(Dexterity, bodyCoords.arms);
+  drawLegs(Speed, bodyCoords.legs);
+  drawAntennaEarHorn(Dexterity, bodyCoords.extra);
 }
 
-function slider(){
-  document.getElementById("StrengthSlide").addEventListener("input", function(){
+function slider() {
+  document.getElementById("StrengthSlide").addEventListener("input", function() {
     Strength = this.value;
-    document.getElementById("StrengthText").innerHTML = "Strength: "+ Strength.toString();
+    document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
     redraw();
   });
-  document.getElementById("DexteritySlide").addEventListener("input", function(){
+  document.getElementById("DexteritySlide").addEventListener("input", function() {
     Dexterity = this.value;
-    document.getElementById("DexterityText").innerHTML = "Dexterity: "+ Dexterity.toString();
+    document.getElementById("DexterityText").innerHTML = "Dexterity: " + Dexterity.toString();
     redraw();
   });
-  document.getElementById("ConstitutionSlide").addEventListener("input", function(){
+  document.getElementById("ConstitutionSlide").addEventListener("input", function() {
     Constitution = this.value;
-    document.getElementById("ConstitutionText").innerHTML = "Constitution: "+ Constitution.toString();
+    document.getElementById("ConstitutionText").innerHTML = "Constitution: " + Constitution.toString();
     redraw();
   });
-  document.getElementById("SpeedSlide").addEventListener("input", function(){
+  document.getElementById("SpeedSlide").addEventListener("input", function() {
     Speed = this.value;
-    document.getElementById("SpeedText").innerHTML = "Speed: "+ Speed.toString();
+    document.getElementById("SpeedText").innerHTML = "Speed: " + Speed.toString();
     redraw();
   });
-  document.getElementById("IntelligenceSlide").addEventListener("input", function(){
+  document.getElementById("IntelligenceSlide").addEventListener("input", function() {
     Intelligence = this.value;
-    document.getElementById("IntelligenceText").innerHTML = "Intelligence: "+ Intelligence.toString();
+    document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
     redraw();
   });
 }
 
-function reroll(){
-
+function reroll() {
   let selectedAbilities = [];
   while (selectedAbilities.length < 2) {
-      let randomIndex = Math.floor(Math.random() * abilities.length);
-      let ability = abilities[randomIndex];
-      if (!selectedAbilities.includes(ability)) {
-          selectedAbilities.push(ability);
-      }
+    let randomIndex = Math.floor(Math.random() * abilities.length);
+    let ability = abilities[randomIndex];
+    if (!selectedAbilities.includes(ability)) {
+      selectedAbilities.push(ability);
+    }
   }
 
   document.getElementById("abilitiesList").innerHTML = "";
   selectedAbilities.forEach(function(ability) {
-      let li = document.createElement("li");
-      li.appendChild(document.createTextNode(ability));
-      document.getElementById("abilitiesList").appendChild(li);
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode(ability));
+    document.getElementById("abilitiesList").appendChild(li);
   });
 
   Strength = Math.floor(Math.random() * 15) + 1;
@@ -85,23 +82,22 @@ function reroll(){
   Intelligence = Math.floor(Math.random() * 15) + 1;
 
   document.getElementById("StrengthSlide").value = Strength;
-  document.getElementById("StrengthText").innerHTML = "Strength: "+ Strength.toString();
+  document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
   document.getElementById("DexteritySlide").value = Dexterity;
-  document.getElementById("DexterityText").innerHTML = "Dexterity: "+ Dexterity.toString();
+  document.getElementById("DexterityText").innerHTML = "Dexterity: " + Dexterity.toString();
   document.getElementById("ConstitutionSlide").value = Constitution;
-  document.getElementById("ConstitutionText").innerHTML = "Constitution: "+ Constitution.toString();
+  document.getElementById("ConstitutionText").innerHTML = "Constitution: " + Constitution.toString();
   document.getElementById("SpeedSlide").value = Speed;
-  document.getElementById("SpeedText").innerHTML = "Speed: "+ Speed.toString();
+  document.getElementById("SpeedText").innerHTML = "Speed: " + Speed.toString();
   document.getElementById("IntelligenceSlide").value = Intelligence;
-  document.getElementById("IntelligenceText").innerHTML = "Intelligence: "+ Intelligence.toString();
+  document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
   redraw();
 }
 
-
-function main(){
+function main() {
   slider();
   initializePopulation();
-  document.getElementById("reroll").onclick = function(){reroll()};
+  document.getElementById("reroll").onclick = function() { reroll() };
   document.getElementById("grow").onclick = function() {
     evaluateFitness();
     generateNextPopulation();
@@ -119,109 +115,163 @@ function main(){
     document.querySelector('.column:nth-child(4) h2').style.display = 'none'; // Hide the stats header
 
     // Generate and add AI creature
-   // generateAICreature();
-});
-
-
+    // generateAICreature();
+  });
 }
 
 function drawBody(constitution) {
+  let bodyType = Math.floor(Math.random() * 5);
   let bodyHeight = map(constitution, 1, 15, 100, 200);
   let bodyWidth = map(constitution, 1, 15, 80, 120);
+  let coordinates = {
+    eyes: { x: width / 2, y: height / 2 - bodyHeight / 4 },
+    nose: { x: width / 2, y: height / 2 },
+    mouth: { x: width / 2, y: height / 2 + bodyHeight / 4 },
+    arms: { x1: width / 2 - bodyWidth / 2 + 10, y1: height / 2, x2: width / 2 + bodyWidth / 2 - 10, y2: height / 2 },
+    legs: { x1: width / 2 - bodyWidth / 4, y1: height / 2 + bodyHeight / 2 - 10, x2: width / 2 + bodyWidth / 4, y2: height / 2 + bodyHeight / 2 - 10 },
+    extra: { x1: width / 2 - bodyWidth / 4, y1: height / 2 - bodyHeight / 2 + 10, x2: width / 2 + bodyWidth / 4, y2: height / 2 - bodyHeight / 2 + 10 }
+  };
+
   fill(randomColor());
-  ellipse(width / 2, height / 2, bodyWidth, bodyHeight);
+  switch (bodyType) {
+    case 0: // Rectangle with rounded corners
+      rect(width / 2 - bodyWidth / 2, height / 2 - bodyHeight / 2, bodyWidth, bodyHeight, 20);
+      coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
+      break;
+    case 1: // Circle
+      ellipse(width / 2, height / 2, bodyWidth, bodyWidth);
+      coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyWidth / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyWidth / 2 + 10;
+      break;
+    case 2: // Oval
+      ellipse(width / 2, height / 2, bodyWidth, bodyHeight);
+      coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
+      break;
+    case 3: // Teardrop
+      beginShape();
+      vertex(width / 2, height / 2 - bodyHeight / 2 + 10);
+      bezierVertex(width / 2 + bodyWidth / 2, height / 2 - bodyHeight / 4, width / 2 + bodyWidth / 2, height / 2 + bodyHeight / 2, width / 2, height / 2 + bodyHeight / 2);
+      bezierVertex(width / 2 - bodyWidth / 2, height / 2 + bodyHeight / 2, width / 2 - bodyWidth / 2, height / 2 - bodyHeight / 4, width / 2, height / 2 - bodyHeight / 2 + 10);
+      endShape(CLOSE);
+      coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
+      break;
+    case 4: // Capsule
+      rect(width / 2 - bodyWidth / 2, height / 2 - bodyHeight / 2, bodyWidth, bodyHeight, bodyWidth / 2);
+      coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
+      break;
+  }
+  return coordinates;
 }
 
-function drawEyes(intelligence) {
+function drawEyes(intelligence, coord) {
+  let eyeCount = Math.floor(Math.random() * 3) + 1;
   let eyeSize = map(intelligence, 1, 15, 10, 30);
-  let eyeOffsetX = map(intelligence, 1, 15, 20, 40);
-  let eyeOffsetY = map(intelligence, 1, 15, 30, 50);
-  
+  let eyeSpacing = eyeSize * 1.5;
   fill(255);
-  ellipse(width / 2 - eyeOffsetX, height / 2 - eyeOffsetY, eyeSize, eyeSize);
-  ellipse(width / 2 + eyeOffsetX, height / 2 - eyeOffsetY, eyeSize, eyeSize);
-  
-  fill(0);
-  ellipse(width / 2 - eyeOffsetX, height / 2 - eyeOffsetY, eyeSize / 2, eyeSize / 2);
-  ellipse(width / 2 + eyeOffsetX, height / 2 - eyeOffsetY, eyeSize / 2, eyeSize / 2);
+  for (let i = 0; i < eyeCount; i++) {
+    let xOffset = (i - (eyeCount - 1) / 2) * eyeSpacing;
+    ellipse(coord.x + xOffset, coord.y, eyeSize, eyeSize);
+    fill(0);
+    ellipse(coord.x + xOffset, coord.y, eyeSize / 2, eyeSize / 2);
+    fill(255);
+  }
 }
 
-function drawMouth(strength) {
+function drawMouth(strength, coord) {
   let mouthWidth = map(strength, 1, 15, 20, 60);
   let mouthHeight = map(strength, 1, 15, 5, 20);
-  let mouthOffsetY = map(strength, 1, 15, 40, 60);
-  
+  let mouthFangs = Math.random() < 0.5;
   fill(255, 0, 0);
-  arc(width / 2, height / 2 + mouthOffsetY, mouthWidth, mouthHeight, 0, PI);
+  arc(coord.x, coord.y, mouthWidth, mouthHeight, 0, PI);
+  if (mouthFangs) {
+    fill(255);
+    triangle(coord.x - mouthWidth / 4, coord.y, coord.x - mouthWidth / 6, coord.y + mouthHeight / 2, coord.x - mouthWidth / 3, coord.y + mouthHeight / 2);
+    triangle(coord.x + mouthWidth / 4, coord.y, coord.x + mouthWidth / 6, coord.y + mouthHeight / 2, coord.x + mouthWidth / 3, coord.y + mouthHeight / 2);
+  }
 }
 
-function drawArms(dexterity) {
+function drawNose(intelligence, coord) {
+  let noseType = Math.floor(Math.random() * 3);
+  fill(0);
+  switch (noseType) {
+    case 0: // Single dot
+      ellipse(coord.x, coord.y, 10, 10);
+      break;
+    case 1: // Two dots
+      ellipse(coord.x - 5, coord.y, 5, 5);
+      ellipse(coord.x + 5, coord.y, 5, 5);
+      break;
+    case 2: // Two dots in a circle
+      ellipse(coord.x - 5, coord.y, 5, 5);
+      ellipse(coord.x + 5, coord.y, 5, 5);
+      noFill();
+      stroke(0);
+      ellipse(coord.x, coord.y, 15, 15);
+      noStroke();
+      break;
+  }
+}
+
+function drawArms(dexterity, coord) {
   let armLength = map(dexterity, 1, 15, 60, 120);
   let armWidth = 20;
-  let armOffsetY = 20;
-  
+  let armEndWidth = 10;
   fill(randomColor());
   // Left arm
   beginShape();
-  vertex(width / 2 - 60, height / 2 - armOffsetY);
-  bezierVertex(width / 2 - 60 - armLength / 2, height / 2 - armOffsetY - armWidth, width / 2 - 60 - armLength, height / 2 + armOffsetY, width / 2 - 60, height / 2 + armOffsetY);
+  vertex(coord.x1, coord.y1);
+  bezierVertex(coord.x1 - armLength / 2, coord.y1 - armWidth, coord.x1 - armLength, coord.y1, coord.x1, coord.y1 + armEndWidth);
   endShape(CLOSE);
 
   // Right arm
   beginShape();
-  vertex(width / 2 + 60, height / 2 - armOffsetY);
-  bezierVertex(width / 2 + 60 + armLength / 2, height / 2 - armOffsetY - armWidth, width / 2 + 60 + armLength, height / 2 + armOffsetY, width / 2 + 60, height / 2 + armOffsetY);
+  vertex(coord.x2, coord.y2);
+  bezierVertex(coord.x2 + armLength / 2, coord.y2 - armWidth, coord.x2 + armLength, coord.y2, coord.x2, coord.y2 + armEndWidth);
   endShape(CLOSE);
 }
 
-function drawLegs(speed) {
+function drawLegs(speed, coord) {
   let legHeight = map(speed, 1, 15, 50, 100);
   let legWidth = 20;
-  let legOffsetY = 80;
-  
+  let legEndWidth = 10;
   fill(randomColor());
-  rect(width / 2 - 30, height / 2 + legOffsetY, legWidth, legHeight, 10);
-  rect(width / 2 + 10, height / 2 + legOffsetY, legWidth, legHeight, 10);
+  rect(coord.x1 - legWidth / 2, coord.y1, legWidth, legHeight, legEndWidth);
+  rect(coord.x2 - legWidth / 2, coord.y2, legWidth, legHeight, legEndWidth);
 }
 
-function drawNose(intelligence) {
-  let noseSize = map(intelligence, 1, 15, 10, 20);
-  let noseOffsetY = map(intelligence, 1, 15, 10, 20);
-  
-  fill(255, 165, 0);
-  ellipse(width / 2, height / 2 - noseOffsetY, noseSize, noseSize);
-}
-
-function drawAntennas(dexterity) {
-  let antennaLength = map(dexterity, 1, 15, 40, 80);
-  let antennaOffsetX = 30;
-  let antennaOffsetY = 120;
-
-  stroke(0);
-  strokeWeight(4);
-  line(width / 2 - antennaOffsetX, height / 2 - antennaOffsetY, width / 2 - antennaOffsetX, height / 2 - antennaOffsetY - antennaLength);
-  line(width / 2 + antennaOffsetX, height / 2 - antennaOffsetY, width / 2 + antennaOffsetX, height / 2 - antennaOffsetY - antennaLength);
-  noStroke();
-}
-
-function drawEars(constitution) {
-  let earSize = map(constitution, 1, 15, 20, 40);
-  let earOffsetX = 40;
-  let earOffsetY = 60;
-  
-  fill(randomColor());
-  ellipse(width / 2 - earOffsetX, height / 2 - earOffsetY, earSize, earSize);
-  ellipse(width / 2 + earOffsetX, height / 2 - earOffsetY, earSize, earSize);
-}
-
-function drawHorns(strength) {
-  let hornSize = map(strength, 1, 15, 20, 40);
-  let hornOffsetX = 20;
-  let hornOffsetY = 80;
-  
-  fill(139, 69, 19);
-  triangle(width / 2 - hornOffsetX, height / 2 - hornOffsetY, width / 2 - hornOffsetX - hornSize / 2, width / 2 - hornOffsetY - hornSize, width / 2 - hornOffsetX + hornSize / 2, width / 2 - hornOffsetY - hornSize);
-  triangle(width / 2 + hornOffsetX, height / 2 - hornOffsetY, width / 2 + hornOffsetX - hornSize / 2, width / 2 - hornOffsetY - hornSize, width / 2 + hornOffsetX + hornSize / 2, width / 2 - hornOffsetY - hornSize);
+function drawAntennaEarHorn(dexterity, coord) {
+  let extraType = Math.floor(Math.random() * 3);
+  switch (extraType) {
+    case 0: // Antennas
+      let antennaLength = map(dexterity, 1, 15, 40, 80);
+      stroke(0);
+      strokeWeight(4);
+      line(coord.x1, coord.y1, coord.x1, coord.y1 - antennaLength);
+      line(coord.x2, coord.y2, coord.x2, coord.y2 - antennaLength);
+      noStroke();
+      break;
+    case 1: // Ears
+      let earSize = map(dexterity, 1, 15, 20, 40);
+      fill(randomColor());
+      ellipse(coord.x1, coord.y1, earSize, earSize);
+      ellipse(coord.x2, coord.y2, earSize, earSize);
+      break;
+    case 2: // Horns
+      let hornSize = map(dexterity, 1, 15, 20, 40);
+      fill(139, 69, 19);
+      triangle(coord.x1, coord.y1, coord.x1 - hornSize / 2, coord.y1 - hornSize, coord.x1 + hornSize / 2, coord.y1 - hornSize);
+      triangle(coord.x2, coord.y2, coord.x2 - hornSize / 2, coord.y2 - hornSize, coord.x2 + hornSize / 2, coord.y2 - hornSize);
+      break;
+  }
 }
 
 function randomColor() {
@@ -229,18 +279,18 @@ function randomColor() {
 }
 
 class Creature {
-    constructor(strength, dexterity, constitution, speed, intelligence) {
-        this.strength = strength;
-        this.dexterity = dexterity;
-        this.constitution = constitution;
-        this.speed = speed;
-        this.intelligence = intelligence;
-        this.fitness = 0;
-    }
+  constructor(strength, dexterity, constitution, speed, intelligence) {
+    this.strength = strength;
+    this.dexterity = dexterity;
+    this.constitution = constitution;
+    this.speed = speed;
+    this.intelligence = intelligence;
+    this.fitness = 0;
+  }
 
-    calculateFitness() {
-        this.fitness = this.strength + this.dexterity + this.constitution + this.speed + this.intelligence;
-    }
+  calculateFitness() {
+    this.fitness = this.strength + this.dexterity + this.constitution + this.speed + this.intelligence;
+  }
 }
 
 let population = [];
@@ -248,91 +298,88 @@ const populationSize = 20;
 const mutationRate = 0.01;
 
 function initializePopulation() {
-    for (let i = 0; i < populationSize; i++) 
-    {
-        population.push(new Creature(
-            Math.floor(Math.random() * 15) + 1,
-            Math.floor(Math.random() * 15) + 1,
-            Math.floor(Math.random() * 15) + 1,
-            Math.floor(Math.random() * 15) + 1,
-            Math.floor(Math.random() * 15) + 1
-        ));
-    }
+  for (let i = 0; i < populationSize; i++) {
+    population.push(new Creature(
+      Math.floor(Math.random() * 15) + 1,
+      Math.floor(Math.random() * 15) + 1,
+      Math.floor(Math.random() * 15) + 1,
+      Math.floor(Math.random() * 15) + 1,
+      Math.floor(Math.random() * 15) + 1
+    ));
+  }
 }
 
 function evaluateFitness() {
-    for (let creature of population) {
-        creature.calculateFitness();
-    }
+  for (let creature of population) {
+    creature.calculateFitness();
+  }
 }
 
 function chooseParent() {
-    let overallFitness = population.reduce((sum, creature) => sum + creature.fitness, 0);
-    let randomValue = Math.random() * overallFitness;
-    let sum = 0;
-    for (let creature of population) {
-        sum += creature.fitness;
-        if (sum > randomValue) {
-            return creature;
-        }
+  let overallFitness = population.reduce((sum, creature) => sum + creature.fitness, 0);
+  let randomValue = Math.random() * overallFitness;
+  let sum = 0;
+  for (let creature of population) {
+    sum += creature.fitness;
+    if (sum > randomValue) {
+      return creature;
     }
-    return population[0];
+  }
+  return population[0];
 }
 
 function crossover(parentOne, parentTwo) {
-    let child = new Creature(
-        Math.random() < 0.5 ? parentOne.strength : parentTwo.strength,
-        Math.random() < 0.5 ? parentOne.dexterity : parentTwo.dexterity,
-        Math.random() < 0.5 ? parentOne.constitution : parentTwo.constitution,
-        Math.random() < 0.5 ? parentOne.speed : parentTwo.speed,
-        Math.random() < 0.5 ? parentOne.intelligence : parentTwo.intelligence
-    );
+  let child = new Creature(
+    Math.random() < 0.5 ? parentOne.strength : parentTwo.strength,
+    Math.random() < 0.5 ? parentOne.dexterity : parentTwo.dexterity,
+    Math.random() < 0.5 ? parentOne.constitution : parentTwo.constitution,
+    Math.random() < 0.5 ? parentOne.speed : parentTwo.speed,
+    Math.random() < 0.5 ? parentOne.intelligence : parentTwo.intelligence
+  );
 
-    if (Math.random() < mutationRate) child.strength = Math.floor(Math.random() * 15) + 1;
-    if (Math.random() < mutationRate) child.dexterity = Math.floor(Math.random() * 15) + 1;
-    if (Math.random() < mutationRate) child.constitution = Math.floor(Math.random() * 15) + 1;
-    if (Math.random() < mutationRate) child.speed = Math.floor(Math.random() * 15) + 1;
-    if (Math.random() < mutationRate) child.intelligence = Math.floor(Math.random() * 15) + 1;
-  
-    return child;
+  if (Math.random() < mutationRate) child.strength = Math.floor(Math.random() * 15) + 1;
+  if (Math.random() < mutationRate) child.dexterity = Math.floor(Math.random() * 15) + 1;
+  if (Math.random() < mutationRate) child.constitution = Math.floor(Math.random() * 15) + 1;
+  if (Math.random() < mutationRate) child.speed = Math.floor(Math.random() * 15) + 1;
+  if (Math.random() < mutationRate) child.intelligence = Math.floor(Math.random() * 15) + 1;
+
+  return child;
 }
 
 function generateNextPopulation() {
-    let newPopulation = [];
-    for (let i = 0; i < populationSize; i++) {
-        let parentOne = chooseParent();
-        let parentTwo = chooseParent();
-        let child = crossover(parentOne, parentTwo);
-        newPopulation.push(child);
-    }
-    population = newPopulation;
+  let newPopulation = [];
+  for (let i = 0; i < populationSize; i++) {
+    let parentOne = chooseParent();
+    let parentTwo = chooseParent();
+    let child = crossover(parentOne, parentTwo);
+    newPopulation.push(child);
+  }
+  population = newPopulation;
 }
 
 function displayBestCreature() {
-    evaluateFitness();
-    let bestCreature = population.reduce((best, creature) => best.fitness > creature.fitness ? best : creature);
-    
-    Strength = bestCreature.strength;
-    Dexterity = bestCreature.dexterity;
-    Constitution = bestCreature.constitution;
-    Speed = bestCreature.speed;
-    Intelligence = bestCreature.intelligence;
-  
-    document.getElementById("StrengthSlide").value = Strength;
-    document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
-    document.getElementById("DexteritySlide").value = Dexterity;
-    document.getElementById("DexterityText").innerHTML = "Dexterity: " + Dexterity.toString();
-    document.getElementById("ConstitutionSlide").value = Constitution;
-    document.getElementById("ConstitutionText").innerHTML = "Constitution: " + Constitution.toString();
-    document.getElementById("SpeedSlide").value = Speed;
-    document.getElementById("SpeedText").innerHTML = "Speed: " + Speed.toString();
-    document.getElementById("IntelligenceSlide").value = Intelligence;
-    document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
-    redraw();
+  evaluateFitness();
+  let bestCreature = population.reduce((best, creature) => best.fitness > creature.fitness ? best : creature);
+
+  Strength = bestCreature.strength;
+  Dexterity = bestCreature.dexterity;
+  Constitution = bestCreature.constitution;
+  Speed = bestCreature.speed;
+  Intelligence = bestCreature.intelligence;
+
+  document.getElementById("StrengthSlide").value = Strength;
+  document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
+  document.getElementById("DexteritySlide").value = Dexterity;
+  document.getElementById("DexterityText").innerHTML = "Dexterity: " + Dexterity.toString();
+  document.getElementById("ConstitutionSlide").value = Constitution;
+  document.getElementById("ConstitutionText").innerHTML = "Constitution: " + Constitution.toString();
+  document.getElementById("SpeedSlide").value = Speed;
+  document.getElementById("SpeedText").innerHTML = "Speed: " + Speed.toString();
+  document.getElementById("IntelligenceSlide").value = Intelligence;
+  document.getElementById("IntelligenceText").innerHTML = "Intelligence: " + Intelligence.toString();
+  redraw();
 }
 
-document.addEventListener("DOMContentLoaded", function(){
-    main();
-})
-
-
+document.addEventListener("DOMContentLoaded", function() {
+  main();
+});

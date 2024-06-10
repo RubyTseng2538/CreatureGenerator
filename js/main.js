@@ -20,6 +20,7 @@ function setup() {
 }
 
 function draw() {
+  noStroke();
   background(220);
   bodyCoords = drawBody(Constitution);
   // drawEyes(Intelligence, bodyCoords.eyes);

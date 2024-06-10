@@ -22,12 +22,13 @@ function setup() {
 function draw() {
   background(220);
   bodyCoords = drawBody(Constitution);
-  drawEyes(Intelligence, bodyCoords.eyes);
+  // drawEyes(Intelligence, bodyCoords.eyes);
   drawMouth(Strength, bodyCoords.mouth);
   drawNose(Intelligence, bodyCoords.nose);
   drawArms(Dexterity, bodyCoords.arms);
   drawLegs(Speed, bodyCoords.legs);
   drawAntennaEarHorn(Dexterity, bodyCoords.extra);
+  drawEyes(Intelligence, bodyCoords.eyes);
 }
 
 function slider() {
@@ -169,15 +170,12 @@ function drawBody(constitution) {
       coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
       coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
       break;
-    case 3: // Teardrop
-      beginShape();
-      vertex(width / 2, height / 2 - bodyHeight / 2 + 10);
-      bezierVertex(width / 2 + bodyWidth / 2, height / 2 - bodyHeight / 4, width / 2 + bodyWidth / 2, height / 2 + bodyHeight / 2, width / 2, height / 2 + bodyHeight / 2);
-      bezierVertex(width / 2 - bodyWidth / 2, height / 2 + bodyHeight / 2, width / 2 - bodyWidth / 2, height / 2 - bodyHeight / 4, width / 2, height / 2 - bodyHeight / 2 + 10);
-      endShape(CLOSE);
+    case 3: // Square with rounded edges
+      let squareSize = bodyWidth;
+      rect(width / 2 - squareSize / 2, height / 2 - squareSize / 2, squareSize, squareSize, 20);
       coordinates.arms.y1 = coordinates.arms.y2 = height / 2;
-      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + bodyHeight / 2 - 10;
-      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - bodyHeight / 2 + 10;
+      coordinates.legs.y1 = coordinates.legs.y2 = height / 2 + squareSize / 2 - 10;
+      coordinates.extra.y1 = coordinates.extra.y2 = height / 2 - squareSize / 2 + 10;
       break;
     case 4: // Capsule
       rect(width / 2 - bodyWidth / 2, height / 2 - bodyHeight / 2, bodyWidth, bodyHeight, bodyWidth / 2);
@@ -237,12 +235,47 @@ function drawMouth(strength, coord) {
   let mouthWidth = map(strength, 1, 15, 20, 60);
   let mouthHeight = map(strength, 1, 15, 5, 20);
   let mouthFangs = true;
+  let mouthFlip = Math.random() < 0.5;
+  let fangType = Math.floor(Math.random() * 3); // 0: triangle, 1: square, 2: arc
+
   fill(255, 0, 0);
-  arc(coord.x, coord.y, mouthWidth, mouthHeight, 0, PI);
+  if (mouthFlip) {
+    arc(coord.x, coord.y, mouthWidth + 10, mouthHeight, PI, 0);
+  } else {
+    arc(coord.x, coord.y, mouthWidth + 10, mouthHeight, 0, PI);
+  }
+
   if (mouthFangs) {
     fill(255);
-    triangle(coord.x - mouthWidth / 4, coord.y, coord.x - mouthWidth / 6, coord.y + mouthHeight / 2, coord.x - mouthWidth / 3, coord.y + mouthHeight / 2);
-    triangle(coord.x + mouthWidth / 4, coord.y, coord.x + mouthWidth / 6, coord.y + mouthHeight / 2, coord.x + mouthWidth / 3, coord.y + mouthHeight / 2);
+    switch (fangType) {
+      case 0: // Triangle fangs
+        if (mouthFlip) {
+          triangle(coord.x - mouthWidth / 4, coord.y, coord.x - mouthWidth / 6, coord.y - mouthHeight / 2, coord.x - mouthWidth / 3, coord.y - mouthHeight / 2);
+          triangle(coord.x + mouthWidth / 4, coord.y, coord.x + mouthWidth / 6, coord.y - mouthHeight / 2, coord.x + mouthWidth / 3, coord.y - mouthHeight / 2);
+        } else {
+          triangle(coord.x - mouthWidth / 4, coord.y, coord.x - mouthWidth / 6, coord.y + mouthHeight / 2, coord.x - mouthWidth / 3, coord.y + mouthHeight / 2);
+          triangle(coord.x + mouthWidth / 4, coord.y, coord.x + mouthWidth / 6, coord.y + mouthHeight / 2, coord.x + mouthWidth / 3, coord.y + mouthHeight / 2);
+        }
+        break;
+      case 1: // Square fangs
+        if (mouthFlip) {
+          rect(coord.x - mouthWidth / 4, coord.y - mouthHeight / 2, mouthWidth / 8, mouthHeight / 2);
+          rect(coord.x + mouthWidth / 4 - mouthWidth / 8, coord.y - mouthHeight / 2, mouthWidth / 8, mouthHeight / 2);
+        } else {
+          rect(coord.x - mouthWidth / 4, coord.y, mouthWidth / 8, mouthHeight / 2);
+          rect(coord.x + mouthWidth / 4 - mouthWidth / 8, coord.y, mouthWidth / 8, mouthHeight / 2);
+        }
+        break;
+      case 2: // Arc fangs
+        if (mouthFlip) {
+          arc(coord.x - mouthWidth / 4, coord.y - mouthHeight / 2, mouthWidth / 8, mouthHeight / 2, 0, PI);
+          arc(coord.x + mouthWidth / 4, coord.y - mouthHeight / 2, mouthWidth / 8, mouthHeight / 2, 0, PI);
+        } else {
+          arc(coord.x - mouthWidth / 4, coord.y, mouthWidth / 8, mouthHeight / 2, PI, 0);
+          arc(coord.x + mouthWidth / 4, coord.y, mouthWidth / 8, mouthHeight / 2, PI, 0);
+        }
+        break;
+    }
   }
 }
 
@@ -297,6 +330,13 @@ function drawLegs(speed, coord) {
 
 function drawAntennaEarHorn(dexterity, coord) {
   let extraType = Math.floor(Math.random() * 3);
+  let earColor = randomColor();
+  let innerEarColor = randomColor();
+  let hornColor = randomColor();
+  while (earColor === innerEarColor) {
+    innerEarColor = randomColor();
+  }
+
   switch (extraType) {
     case 0: // Antennas
       let antennaLength = map(dexterity, 1, 15, 40, 80);
@@ -313,43 +353,70 @@ function drawAntennaEarHorn(dexterity, coord) {
       quadraticVertex(coord.x2 + antennaCurve, coord.y2 - antennaLength / 2, coord.x2, coord.y2 - antennaLength);
       endShape();
       noStroke();
-      fill(0);
-      ellipse(coord.x1, coord.y1 - antennaLength, 5, 5);
-      ellipse(coord.x2, coord.y2 - antennaLength, 5, 5);
+      fill(randomColor());
+      ellipse(coord.x1, coord.y1 - antennaLength, 10, 10);
+      ellipse(coord.x2, coord.y2 - antennaLength, 10, 10);
       break;
     case 1: // Ears
       let earSize = map(dexterity, 1, 15, 20, 40);
       let earCurve = map(dexterity, 1, 15, 5, 15);
-      fill(randomColor());
+      fill(earColor);
       beginShape();
       vertex(coord.x1, coord.y1);
       quadraticVertex(coord.x1 - earSize / 2, coord.y1 - earCurve, coord.x1, coord.y1 - earSize);
       quadraticVertex(coord.x1 + earSize / 2, coord.y1 - earCurve, coord.x1, coord.y1);
       endShape(CLOSE);
+      fill(innerEarColor);
+      beginShape();
+      vertex(coord.x1, coord.y1 - 5);
+      quadraticVertex(coord.x1 - (earSize - 10) / 2, coord.y1 - earCurve + 5, coord.x1, coord.y1 - (earSize - 10));
+      quadraticVertex(coord.x1 + (earSize - 10) / 2, coord.y1 - earCurve + 5, coord.x1, coord.y1 - 5);
+      endShape(CLOSE);
+      fill(earColor);
       beginShape();
       vertex(coord.x2, coord.y2);
       quadraticVertex(coord.x2 + earSize / 2, coord.y2 - earCurve, coord.x2, coord.y2 - earSize);
       quadraticVertex(coord.x2 - earSize / 2, coord.y2 - earCurve, coord.x2, coord.y2);
       endShape(CLOSE);
+      fill(innerEarColor);
+      beginShape();
+      vertex(coord.x2, coord.y2 - 5);
+      quadraticVertex(coord.x2 + (earSize - 10) / 2, coord.y2 - earCurve + 5, coord.x2, coord.y2 - (earSize - 10));
+      quadraticVertex(coord.x2 - (earSize - 10) / 2, coord.y2 - earCurve + 5, coord.x2, coord.y2 - 5);
+      endShape(CLOSE);
       break;
     case 2: // Horns
-      let hornSize = map(dexterity, 1, 15, 20, 40);
-      let hornWidth = map(dexterity, 1, 15, 5, 20);
-      fill(139, 69, 19);
+      let hornSize = map(dexterity, 1, 15, 40 / 2, 80 / 2); // Adjusted height to be similar to antennas, scaled down to 1/3
+      let hornBase = hornSize / 2; // Base width
+      let hornHeight = hornSize; // Height of the horn
+      let hornAngle = radians(30); // 30 degree angle
+      let offsetX = hornBase / 2 * cos(hornAngle);
+      let offsetY = hornBase / 2 * sin(hornAngle);
+
+      // Left horn
+      fill(hornColor);
+      noStroke();
       beginShape();
-      vertex(coord.x1, coord.y1);
-      quadraticVertex(coord.x1 - hornWidth / 2, coord.y1 - hornSize / 2, coord.x1, coord.y1 - hornSize);
-      quadraticVertex(coord.x1 + hornWidth / 2, coord.y1 - hornSize / 2, coord.x1, coord.y1);
+      vertex(coord.x1, coord.y1); // Base center
+      vertex(coord.x1 - offsetX, coord.y1 - offsetY); // Bottom left
+      vertex(coord.x1, coord.y1 - hornHeight); // Tip
+      vertex(coord.x1 + offsetX, coord.y1 - offsetY); // Bottom right
       endShape(CLOSE);
+      ellipse(coord.x1, coord.y1 - offsetY, hornBase - 5 / 3, hornBase / 2); // Base ellipse
+
+      // Right horn
+      fill(hornColor);
+      noStroke();
       beginShape();
-      vertex(coord.x2, coord.y2);
-      quadraticVertex(coord.x2 + hornWidth / 2, coord.y2 - hornSize / 2, coord.x2, coord.y2 - hornSize);
-      quadraticVertex(coord.x2 - hornWidth / 2, coord.y2 - hornSize / 2, coord.x2, coord.y2);
+      vertex(coord.x2, coord.y2); // Base center
+      vertex(coord.x2 - offsetX, coord.y2 - offsetY); // Bottom left
+      vertex(coord.x2, coord.y2 - hornHeight); // Tip
+      vertex(coord.x2 + offsetX, coord.y2 - offsetY); // Bottom right
       endShape(CLOSE);
+      ellipse(coord.x2, coord.y2 - offsetY, hornBase - 5 / 3, hornBase / 2); // Base ellipse
       break;
   }
 }
-
 
 function randomColor() {
   return color(random(255), random(255), random(255));

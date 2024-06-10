@@ -1,8 +1,8 @@
-let Strength = 7;
-let Dexterity = 7;
-let Constitution = 7;
-let Speed = 7;
-let Intelligence = 7;
+let Strength = 1;
+let Dexterity = 1;
+let Constitution = 1;
+let Speed = 1;
+let Intelligence = 1;
 const abilities = [
   "Fire Ball",
   "Ice Shard",
@@ -68,18 +68,18 @@ function reroll() {
     }
   }
 
-  document.getElementById("abilitiesList").innerHTML = "";
+  /*document.getElementById("abilitiesList").innerHTML = "";
   selectedAbilities.forEach(function(ability) {
     let li = document.createElement("li");
     li.appendChild(document.createTextNode(ability));
     document.getElementById("abilitiesList").appendChild(li);
-  });
+  });*/
 
-  Strength = Math.floor(Math.random() * 15) + 1;
-  Dexterity = Math.floor(Math.random() * 15) + 1;
-  Constitution = Math.floor(Math.random() * 15) + 1;
-  Speed = Math.floor(Math.random() * 15) + 1;
-  Intelligence = Math.floor(Math.random() * 15) + 1;
+  Strength = Math.floor(Math.random() * 5) + 1;
+  Dexterity = Math.floor(Math.random() * 5) + 1;
+  Constitution = Math.floor(Math.random() * 5) + 1;
+  Speed = Math.floor(Math.random() * 5) + 1;
+  Intelligence = Math.floor(Math.random() * 5) + 1;
 
   document.getElementById("StrengthSlide").value = Strength;
   document.getElementById("StrengthText").innerHTML = "Strength: " + Strength.toString();
@@ -97,12 +97,29 @@ function reroll() {
 function main() {
   slider();
   initializePopulation();
-  document.getElementById("reroll").onclick = function() { reroll() };
+  document.getElementById("reroll").onclick = function() { reroll(); initializePopulation(); };
   document.getElementById("grow").onclick = function() {
     evaluateFitness();
     generateNextPopulation();
     displayBestCreature();
   };
+
+  document.getElementById("StrengthSlide").addEventListener("input", function() {
+    initializePopulation();
+  });
+  document.getElementById("DexteritySlide").addEventListener("input", function() {
+    initializePopulation();
+  });
+  document.getElementById("ConstitutionSlide").addEventListener("input", function() {
+    initializePopulation();
+  });
+  document.getElementById("SpeedSlide").addEventListener("input", function() {
+    initializePopulation();
+  });
+  document.getElementById("IntelligenceSlide").addEventListener("input", function() {
+    initializePopulation();
+  });
+
   document.getElementById("battle").addEventListener("click", function() {
     // Hide the battle button
     document.getElementById("battle").style.display = 'none';
@@ -349,22 +366,31 @@ class Creature {
   }
 
   calculateFitness() {
-    this.fitness = this.strength + this.dexterity + this.constitution + this.speed + this.intelligence;
+    this.fitness = Math.pow(this.strength, 1.5) + Math.pow(this.dexterity, 1.5) + Math.pow(this.constitution, 1.5) + Math.pow(this.speed, 1.5) + Math.pow(this.intelligence, 1.5);
   }
 }
 
 let population = [];
 const populationSize = 20;
-const mutationRate = 0.01;
+const mutationRate = 0.005;
+const stability = 0.8;
 
 function initializePopulation() {
+  population = [];
+  
   for (let i = 0; i < populationSize; i++) {
+    let initialStrength = Math.round(document.getElementById("StrengthSlide").value * (Math.random() * 0.2 + 0.9));
+    let initialDexterity = Math.round(document.getElementById("DexteritySlide").value * (Math.random() * 0.2 + 0.9));
+    let initialConstitution = Math.round(document.getElementById("ConstitutionSlide").value * (Math.random() * 0.2 + 0.9));
+    let initialSpeed = Math.round(document.getElementById("SpeedSlide").value * (Math.random() * 0.2 + 0.9));
+    let initialIntelligence = Math.round(document.getElementById("IntelligenceSlide").value * (Math.random() * 0.2 + 0.9));
+
     population.push(new Creature(
-      Math.floor(Math.random() * 15) + 1,
-      Math.floor(Math.random() * 15) + 1,
-      Math.floor(Math.random() * 15) + 1,
-      Math.floor(Math.random() * 15) + 1,
-      Math.floor(Math.random() * 15) + 1
+      initialStrength,
+      initialDexterity,
+      initialConstitution,
+      initialSpeed,
+      initialIntelligence
     ));
   }
 }
@@ -376,11 +402,24 @@ function evaluateFitness() {
 }
 
 function chooseParent() {
-  let overallFitness = population.reduce((sum, creature) => sum + creature.fitness, 0);
-  let randomValue = Math.random() * overallFitness;
+  let totalAdjustedFitness = population.reduce((sum, creature) => {
+    let adjustedFitness = Math.pow(creature.strength, Strength) +
+                          Math.pow(creature.dexterity, Dexterity) +
+                          Math.pow(creature.constitution, Constitution) +
+                          Math.pow(creature.speed, Speed) +
+                          Math.pow(creature.intelligence, Intelligence);
+    return sum + adjustedFitness;
+  }, 0);
+
+  let randomValue = Math.random() * totalAdjustedFitness;
   let sum = 0;
   for (let creature of population) {
-    sum += creature.fitness;
+    let adjustedFitness = Math.pow(creature.strength, Strength) +
+                          Math.pow(creature.dexterity, Dexterity) +
+                          Math.pow(creature.constitution, Constitution) +
+                          Math.pow(creature.speed, Speed) +
+                          Math.pow(creature.intelligence, Intelligence);
+    sum += adjustedFitness;
     if (sum > randomValue) {
       return creature;
     }
@@ -389,19 +428,30 @@ function chooseParent() {
 }
 
 function crossover(parentOne, parentTwo) {
+  function biasedAverage(val1, val2, userVal) {
+    let average = (val1 + val2) / 2;
+    if (val1 < userVal && val2 < userVal) {
+      return Math.min(userVal, Math.round(stability * average + (1 - stability) * Math.max(val1, val2)));
+    } else if (val1 > userVal && val2 > userVal) {
+      return Math.max(userVal, Math.round(stability * average + (1 - stability) * Math.min(val1, val2)));
+    } else {
+      return Math.round(stability * average + (1 - stability) * userVal);
+    }
+  }
+
   let child = new Creature(
-    Math.random() < 0.5 ? parentOne.strength : parentTwo.strength,
-    Math.random() < 0.5 ? parentOne.dexterity : parentTwo.dexterity,
-    Math.random() < 0.5 ? parentOne.constitution : parentTwo.constitution,
-    Math.random() < 0.5 ? parentOne.speed : parentTwo.speed,
-    Math.random() < 0.5 ? parentOne.intelligence : parentTwo.intelligence
+    biasedAverage(parentOne.strength, parentTwo.strength, Strength),
+    biasedAverage(parentOne.dexterity, parentTwo.dexterity, Dexterity),
+    biasedAverage(parentOne.constitution, parentTwo.constitution, Constitution),
+    biasedAverage(parentOne.speed, parentTwo.speed, Speed),
+    biasedAverage(parentOne.intelligence, parentTwo.intelligence, Intelligence)
   );
 
-  if (Math.random() < mutationRate) child.strength = Math.floor(Math.random() * 15) + 1;
-  if (Math.random() < mutationRate) child.dexterity = Math.floor(Math.random() * 15) + 1;
-  if (Math.random() < mutationRate) child.constitution = Math.floor(Math.random() * 15) + 1;
-  if (Math.random() < mutationRate) child.speed = Math.floor(Math.random() * 15) + 1;
-  if (Math.random() < mutationRate) child.intelligence = Math.floor(Math.random() * 15) + 1;
+  if (Math.random() < mutationRate) child.strength = Math.max(1, child.strength + (Math.random() < 0.5 ? -1 : 1));
+  if (Math.random() < mutationRate) child.dexterity = Math.max(1, child.dexterity + (Math.random() < 0.5 ? -1 : 1));
+  if (Math.random() < mutationRate) child.constitution = Math.max(1, child.constitution + (Math.random() < 0.5 ? -1 : 1));
+  if (Math.random() < mutationRate) child.speed = Math.max(1, child.speed + (Math.random() < 0.5 ? -1 : 1));
+  if (Math.random() < mutationRate) child.intelligence = Math.max(1, child.intelligence + (Math.random() < 0.5 ? -1 : 1));
 
   return child;
 }
